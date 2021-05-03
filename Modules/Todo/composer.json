@@ -1,0 +1,23 @@
+{
+    "name": "renatodompieri/todo",
+    "description": "",
+    "authors": [
+        {
+            "name": "Renato Beltrão",
+            "email": "dompieri.renato@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Todo\\": ""
+        }
+    }
+}
