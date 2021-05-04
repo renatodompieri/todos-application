@@ -7,7 +7,12 @@ import useJwt from '@/auth/jwt/useJwt'
  */
 // eslint-disable-next-line arrow-body-style
 export const isUserLoggedIn = () => {
-  return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+  const userData = localStorage.getItem('userData')
+  const token = localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+
+  if (userData === 'undefined' || token === 'undefined') return false
+
+  return userData && token
 }
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))

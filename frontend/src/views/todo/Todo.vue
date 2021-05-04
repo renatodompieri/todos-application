@@ -32,7 +32,7 @@
             </b-input-group-prepend>
             <b-form-input
               :value="searchQuery"
-              placeholder="Search task"
+              placeholder="Search todo"
               @input="updateRouteQuery"
             />
           </b-input-group>
@@ -75,40 +75,40 @@
       <!-- Todo List -->
       <vue-perfect-scrollbar
         :settings="perfectScrollbarSettings"
-        class="todo-task-list-wrapper list-group scroll-area"
+        class="todo-list-wrapper list-group scroll-area"
       >
         <draggable
-          v-model="tasks"
-          handle=".draggable-task-handle"
+          v-model="todos"
+          handle=".draggable-todo-handle"
           tag="ul"
-          class="todo-task-list media-list"
+          class="todo-list media-list"
         >
           <li
-            v-for="task in tasks"
-            :key="task.id"
+            v-for="todo in todos"
+            :key="todo.id"
             class="todo-item"
-            :class="{ 'completed': task.isCompleted }"
-            @click="handleTaskClick(task)"
+            :class="{ 'completed': todo.isCompleted }"
+            @click="handleTodoClick(todo)"
           >
             <feather-icon
               icon="MoreVerticalIcon"
-              class="draggable-task-handle d-inline"
+              class="draggable-todo-handle d-inline"
             />
             <div class="todo-title-wrapper">
               <div class="todo-title-area">
                 <div class="title-wrapper">
                   <b-form-checkbox
-                    :checked="task.isCompleted"
+                    :checked="todo.isCompleted"
                     @click.native.stop
-                    @change="updateTaskIsCompleted(task)"
+                    @change="updateTodoIsCompleted(todo)"
                   />
-                  <span class="todo-title">{{ task.title }}</span>
+                  <span class="todo-title">{{ todo.title }}</span>
                 </div>
               </div>
               <div class="todo-item-action">
                 <div class="badge-wrapper mr-1">
                   <b-badge
-                    v-for="tag in task.tags"
+                    v-for="tag in todo.tags"
                     :key="tag"
                     pill
                     :variant="`light-${resolveTagVariant(tag)}`"
@@ -117,13 +117,13 @@
                     {{ tag }}
                   </b-badge>
                 </div>
-                <small class="text-nowrap text-muted mr-1">{{ formatDate(task.dueDate, { month: 'short', day: 'numeric'}) }}</small>
+                <small class="text-nowrap text-muted mr-1">{{ formatDate(todo.dueDate, { month: 'short', day: 'numeric'}) }}</small>
                 <b-avatar
-                  v-if="task.assignee"
+                  v-if="todo.assignee"
                   size="32"
-                  :src="task.assignee.avatar"
-                  :variant="`light-${resolveAvatarVariant(task.tags)}`"
-                  :text="avatarText(task.assignee.fullName)"
+                  :src="todo.assignee.avatar"
+                  :variant="`light-${resolveAvatarVariant(todo.tags)}`"
+                  :text="avatarText(todo.assignee.fullName)"
                 />
                 <b-avatar
                   v-else
@@ -142,28 +142,28 @@
         </draggable>
         <div
           class="no-results"
-          :class="{'show': !tasks.length}"
+          :class="{'show': !todos.length}"
         >
           <h5>No Items Found</h5>
         </div>
       </vue-perfect-scrollbar>
     </div>
 
-    <!-- Task Handler -->
-    <todo-task-handler-sidebar
-      v-model="isTaskHandlerSidebarActive"
-      :task="task"
-      :clear-task-data="clearTaskData"
-      @remove-task="removeTask"
-      @add-task="addTask"
-      @update-task="updateTask"
+    <!-- Todo Handler -->
+    <todo-handler-sidebar
+      v-model="isTodoHandlerSidebarActive"
+      :todo="todo"
+      :clear-todo-data="clearTodoData"
+      @remove-todo="removeTodo"
+      @add-todo="addTodo"
+      @update-todo="updateTodo"
     />
 
     <!-- Sidebar -->
     <portal to="content-renderer-sidebar-left">
       <todo-left-sidebar
-        :task-tags="taskTags"
-        :is-task-handler-sidebar-active.sync="isTaskHandlerSidebarActive"
+        :todo-tags="todoTags"
+        :is-todo-handler-sidebar-active.sync="isTodoHandlerSidebarActive"
         :class="{'show': mqShallShowLeftSidebar}"
         @close-left-sidebar="mqShallShowLeftSidebar = false"
       />
@@ -187,7 +187,7 @@ import { useRouter } from '@core/utils/utils'
 import { useResponsiveAppLeftSidebarVisibility } from '@core/comp-functions/ui/app'
 import TodoLeftSidebar from './TodoLeftSidebar.vue'
 import todoStoreModule from './todoStoreModule'
-import TodoTaskHandlerSidebar from './TodoTaskHandlerSidebar.vue'
+import TodoHandlerSidebar from './TodoHandlerSidebar.vue'
 
 export default {
   components: {
@@ -204,7 +204,7 @@ export default {
 
     // App SFC
     TodoLeftSidebar,
-    TodoTaskHandlerSidebar,
+    TodoHandlerSidebar,
   },
   setup() {
     const TODO_APP_STORE_MODULE_NAME = 'todo'
@@ -223,10 +223,10 @@ export default {
     const routeParams = computed(() => route.value.params)
     watch(routeParams, () => {
       // eslint-disable-next-line no-use-before-define
-      fetchTasks()
+      fetchTodos()
     })
 
-    const tasks = ref([])
+    const todos = ref([])
 
     const sortOptions = [
       'latest',
@@ -248,7 +248,7 @@ export default {
       router.replace({ name: route.name, query: currentRouteQuery }).catch(() => {})
     }
 
-    const blankTask = {
+    const blankTodo = {
       id: null,
       title: '',
       dueDate: new Date(),
@@ -259,30 +259,30 @@ export default {
       isDeleted: false,
       isImportant: false,
     }
-    const task = ref(JSON.parse(JSON.stringify(blankTask)))
-    const clearTaskData = () => {
-      task.value = JSON.parse(JSON.stringify(blankTask))
+    const todo = ref(JSON.parse(JSON.stringify(blankTodo)))
+    const clearTodoData = () => {
+      todo.value = JSON.parse(JSON.stringify(blankTodo))
     }
 
-    const addTask = val => {
-      store.dispatch('todo/addTask', val)
+    const addTodo = val => {
+      store.dispatch('todo/addTodo', val)
         .then(() => {
           // eslint-disable-next-line no-use-before-define
-          fetchTasks()
+          fetchTodos()
         })
     }
-    const removeTask = () => {
-      store.dispatch('todo/removeTask', { id: task.value.id })
+    const removeTodo = () => {
+      store.dispatch('todo/removeTodo', { id: todo.value.id })
         .then(() => {
           // eslint-disable-next-line no-use-before-define
-          fetchTasks()
+          fetchTodos()
         })
     }
-    const updateTask = taskData => {
-      store.dispatch('todo/updateTask', { task: taskData })
+    const updateTodo = todoData => {
+      store.dispatch('todo/updateTodo', { todo: todoData })
         .then(() => {
           // eslint-disable-next-line no-use-before-define
-          fetchTasks()
+          fetchTodos()
         })
     }
 
@@ -290,14 +290,14 @@ export default {
       maxScrollbarLength: 150,
     }
 
-    const isTaskHandlerSidebarActive = ref(false)
+    const isTodoHandlerSidebarActive = ref(false)
 
-    const taskTags = [
-      { title: 'Team', color: 'primary', route: { name: 'apps-todo-tag', params: { tag: 'team' } } },
-      { title: 'Low', color: 'success', route: { name: 'apps-todo-tag', params: { tag: 'low' } } },
-      { title: 'Medium', color: 'warning', route: { name: 'apps-todo-tag', params: { tag: 'medium' } } },
-      { title: 'High', color: 'danger', route: { name: 'apps-todo-tag', params: { tag: 'high' } } },
-      { title: 'Update', color: 'info', route: { name: 'apps-todo-tag', params: { tag: 'update' } } },
+    const todoTags = [
+      { title: 'Team', color: 'primary', route: { name: 'todo-tag', params: { tag: 'team' } } },
+      { title: 'Low', color: 'success', route: { name: 'todo-tag', params: { tag: 'low' } } },
+      { title: 'Medium', color: 'warning', route: { name: 'todo-tag', params: { tag: 'medium' } } },
+      { title: 'High', color: 'danger', route: { name: 'todo-tag', params: { tag: 'high' } } },
+      { title: 'Update', color: 'info', route: { name: 'todo-tag', params: { tag: 'update' } } },
     ]
 
     const resolveTagVariant = tag => {
@@ -324,54 +324,56 @@ export default {
       searchQuery.value = val
     })
     // eslint-disable-next-line no-use-before-define
-    watch([searchQuery, sortBy], () => fetchTasks())
+    watch([searchQuery, sortBy], () => fetchTodos())
     const updateRouteQuery = val => {
-      const currentRouteQuery = JSON.parse(JSON.stringify(route.value.query))
-
-      if (val) currentRouteQuery.q = val
-      else delete currentRouteQuery.q
-
-      router.replace({ name: route.name, query: currentRouteQuery })
+      console.log(val, 'METHOD NOT YET IMPLEMENTED')
+      return false
+      // const currentRouteQuery = JSON.parse(JSON.stringify(route.value.query))
+      //
+      // if (val) currentRouteQuery.q = val
+      // else delete currentRouteQuery.q
+      //
+      // router.replace({ name: route.name, query: currentRouteQuery })
     }
 
-    const fetchTasks = () => {
-      store.dispatch('todo/fetchTasks', {
+    const fetchTodos = () => {
+      store.dispatch('todo/fetchTodos', {
         q: searchQuery.value,
         filter: router.currentRoute.params.filter,
         tag: router.currentRoute.params.tag,
         sortBy: sortBy.value,
       })
         .then(response => {
-          tasks.value = response.data
+          todos.value = response.data
         })
     }
 
-    fetchTasks()
+    fetchTodos()
 
-    const handleTaskClick = taskData => {
-      task.value = taskData
-      isTaskHandlerSidebarActive.value = true
+    const handleTodoClick = todoData => {
+      todo.value = todoData
+      isTodoHandlerSidebarActive.value = true
     }
 
-    // Single Task isCompleted update
-    const updateTaskIsCompleted = taskData => {
+    // Single Todo isCompleted update
+    const updateTodoIsCompleted = todoData => {
       // eslint-disable-next-line no-param-reassign
-      taskData.isCompleted = !taskData.isCompleted
-      updateTask(taskData)
+      todoData.isCompleted = !todoData.isCompleted
+      updateTodo(todoData)
     }
 
     const { mqShallShowLeftSidebar } = useResponsiveAppLeftSidebarVisibility()
 
     return {
-      task,
-      tasks,
-      removeTask,
-      addTask,
-      updateTask,
-      clearTaskData,
-      taskTags,
+      todo,
+      todos,
+      removeTodo,
+      addTodo,
+      updateTodo,
+      clearTodoData,
+      todoTags,
       searchQuery,
-      fetchTasks,
+      fetchTodos,
       perfectScrollbarSettings,
       updateRouteQuery,
       resetSortAndNavigate,
@@ -379,17 +381,17 @@ export default {
       // UI
       resolveTagVariant,
       resolveAvatarVariant,
-      isTaskHandlerSidebarActive,
+      isTodoHandlerSidebarActive,
 
       // Click Handler
-      handleTaskClick,
+      handleTodoClick,
 
       // Filters
       formatDate,
       avatarText,
 
-      // Single Task isCompleted update
-      updateTaskIsCompleted,
+      // Single Todo isCompleted update
+      updateTodoIsCompleted,
 
       // Left Sidebar Responsive
       mqShallShowLeftSidebar,
@@ -399,7 +401,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.draggable-task-handle {
+.draggable-todo-handle {
 position: absolute;
     left: 8px;
     top: 50%;
@@ -407,7 +409,7 @@ position: absolute;
     visibility: hidden;
     cursor: move;
 
-    .todo-task-list .todo-item:hover & {
+    .todo-list .todo-item:hover & {
       visibility: visible;
     }
 }

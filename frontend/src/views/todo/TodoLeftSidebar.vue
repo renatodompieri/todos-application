@@ -3,14 +3,14 @@
     <div class="sidebar">
       <div class="sidebar-content todo-sidebar">
         <div class="todo-app-menu">
-          <div class="add-task">
+          <div class="add-todo">
             <b-button
               v-ripple.400="'rgba(255, 255, 255, 0.15)'"
               variant="primary"
               block
-              @click="$emit('update:is-task-handler-sidebar-active', true); $emit('close-left-sidebar')"
+              @click="$emit('update:is-todo-handler-sidebar-active', true); $emit('close-left-sidebar')"
             >
-              Add Task
+              Add Todo
             </b-button>
           </div>
           <vue-perfect-scrollbar
@@ -20,7 +20,7 @@
             <!-- Filters -->
             <b-list-group class="list-group-filters">
               <b-list-group-item
-                v-for="filter in taskFilters"
+                v-for="filter in todoFilters"
                 :key="filter.title + $route.path"
                 :to="filter.route"
                 :active="isDynamicRouteActive(filter.route)"
@@ -34,31 +34,6 @@
                 <span class="align-text-bottom line-height-1">{{ filter.title }}</span>
               </b-list-group-item>
             </b-list-group>
-
-            <!-- Tags -->
-            <div class="mt-3 px-2 d-flex justify-content-between">
-              <h6 class="section-label mb-1">
-                Tags
-              </h6>
-              <feather-icon icon="PlusIcon" />
-            </div>
-
-            <b-list-group class="list-group-labels">
-              <b-list-group-item
-                v-for="tag in taskTags"
-                :key="tag.title + $route.path"
-                :to="tag.route"
-                :active="isDynamicRouteActive(tag.route)"
-                @click="$emit('close-left-sidebar')"
-              >
-                <span
-                  class="bullet bullet-sm mr-1"
-                  :class="`bullet-${tag.color}`"
-                />
-                <span>{{ tag.title }}</span>
-              </b-list-group-item>
-            </b-list-group>
-
           </vue-perfect-scrollbar>
         </div>
       </div>
@@ -82,27 +57,21 @@ export default {
     BListGroupItem,
     VuePerfectScrollbar,
   },
-  props: {
-    taskTags: {
-      type: Array,
-      required: true,
-    },
-  },
   setup() {
     const perfectScrollbarSettings = {
       maxScrollbarLength: 60,
     }
 
-    const taskFilters = [
-      { title: 'My Task', icon: 'MailIcon', route: { name: 'apps-todo' } },
-      { title: 'Important', icon: 'StarIcon', route: { name: 'apps-todo-filter', params: { filter: 'important' } } },
-      { title: 'Completed', icon: 'CheckIcon', route: { name: 'apps-todo-filter', params: { filter: 'completed' } } },
-      { title: 'Deleted', icon: 'TrashIcon', route: { name: 'apps-todo-filter', params: { filter: 'deleted' } } },
+    const todoFilters = [
+      { title: 'My Todos', icon: 'MailIcon', route: { name: 'todo' } },
+      { title: 'Important', icon: 'StarIcon', route: { name: 'todo-filter', params: { filter: 'important' } } },
+      { title: 'Completed', icon: 'CheckIcon', route: { name: 'todo-filter', params: { filter: 'completed' } } },
+      { title: 'Deleted', icon: 'TrashIcon', route: { name: 'todo-filter', params: { filter: 'deleted' } } },
     ]
 
     return {
       perfectScrollbarSettings,
-      taskFilters,
+      todoFilters,
       isDynamicRouteActive,
     }
   },

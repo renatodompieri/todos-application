@@ -65,4 +65,21 @@ class TodoRepository extends BaseRepository
 
         return $todo;
     }
+
+    public function findByFilter(?string $filter)
+    {
+        if ($filter === 'important') {
+            return $this->findByField('important', 1);
+        }
+
+        if ($filter === 'completed') {
+            return $this->findWhere([['completed_at', '!=', null]]);
+        }
+
+        if ($filter === 'deleted') {
+            return $this->findByField('status', 0);
+        }
+
+        return $this->all();
+    }
 }

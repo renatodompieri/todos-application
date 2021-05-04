@@ -20,6 +20,7 @@ class CreateTodosTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('status')->default(0);
+            $table->boolean('important')->default(0);
             $table->date('date')->nullable();
             $table->dateTime('completed_at')->nullable();
             $table->json('tags')->nullable();

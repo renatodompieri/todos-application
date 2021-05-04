@@ -1893,11 +1893,11 @@
         }
       }
       .content-right {
-        .todo-task-list-wrapper {
+        .todo-todo-list-wrapper {
           background-color: $theme-dark-card-bg !important;
           border-color: $theme-dark-border-color;
         }
-        .todo-task-list {
+        .todo-todo-list {
           .todo-item {
             &:not(:first-child) {
               border-color: $theme-dark-border-color;

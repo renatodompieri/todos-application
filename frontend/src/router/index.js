@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 // Routes
 //   @todo: Disabled until passport is configured
 // import { canNavigate } from '@/libs/acl/routeProtection'
-// import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { isUserLoggedIn } from '@/auth/utils'
 import todo from './routes/todo'
 import authentication from './routes/authentication'
 
@@ -29,25 +28,23 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, _, next) => {
-
-  /**
-  @todo: Disabled until passport is configured
-
   const isLoggedIn = isUserLoggedIn()
-  if (!canNavigate(to)) {
+  if (!isLoggedIn && to.name !== 'auth-login') return next({ name: 'auth-login' })
+  /**
+   if (!canNavigate(to)) {
     // Redirect to login if not logged in
-    if (!isLoggedIn) return next({ name: 'auth-login' })
 
     // If logged in => not authorized
     return next({ name: 'misc-not-authorized' })
   }
+  */
 
-  // Redirect if logged in
-  if (to.meta.redirectIfLoggedIn && isLoggedIn) {
+  /**
+    if (to.meta.redirectIfLoggedIn && isLoggedIn) {
     const userData = getUserData()
     next(getHomeRouteForLoggedInUser(userData ? userData.role : null))
   }
-  */
+ */
 
   return next()
 })

@@ -58,7 +58,7 @@
         icon="CheckSquareIcon"
         class="mr-50"
       />
-      <span>Task</span>
+      <span>Todo</span>
     </b-dropdown-item>
     <b-dropdown-item
       :to="{ name: 'apps-chat' }"

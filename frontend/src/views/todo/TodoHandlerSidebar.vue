@@ -1,47 +1,47 @@
 <template>
   <div>
     <b-sidebar
-      id="sidebar-task-handler"
+      id="sidebar-todo-handler"
       sidebar-class="sidebar-lg"
-      :visible="isTaskHandlerSidebarActive"
+      :visible="isTodoHandlerSidebarActive"
       bg-variant="white"
       shadow
       backdrop
       no-header
       right
-      @change="(val) => $emit('update:is-task-handler-sidebar-active', val)"
+      @change="(val) => $emit('update:is-todo-handler-sidebar-active', val)"
       @hidden="clearForm"
     >
       <template #default="{ hide }">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center content-sidebar-header px-2 py-1">
           <b-button
-            v-if="taskLocal.id"
+            v-if="todoLocal.id"
             size="sm"
-            :variant="taskLocal.isCompleted ? 'outline-success' : 'outline-secondary'"
-            @click="taskLocal.isCompleted = !taskLocal.isCompleted"
+            :variant="todoLocal.isCompleted ? 'outline-success' : 'outline-secondary'"
+            @click="todoLocal.isCompleted = !todoLocal.isCompleted"
           >
-            {{ taskLocal.isCompleted ? 'Completed' : 'Mark Complete' }}
+            {{ todoLocal.isCompleted ? 'Completed' : 'Mark Complete' }}
           </b-button>
           <h5
             v-else
             class="mb-0"
           >
-            Add Task
+            Add Todo
           </h5>
           <div>
             <feather-icon
-              v-show="taskLocal.id"
+              v-show="todoLocal.id"
               icon="TrashIcon"
               class="cursor-pointer"
-              @click="$emit('remove-task'); hide();"
+              @click="$emit('remove-todo'); hide();"
             />
             <feather-icon
               class="ml-1 cursor-pointer"
               icon="StarIcon"
               size="16"
-              :class="{ 'text-warning': taskLocal.isImportant }"
-              @click="taskLocal.isImportant = !taskLocal.isImportant"
+              :class="{ 'text-warning': todoLocal.isImportant }"
+              @click="todoLocal.isImportant = !todoLocal.isImportant"
             />
             <feather-icon
               class="ml-1 cursor-pointer"
@@ -73,15 +73,15 @@
             >
               <b-form-group
                 label="Title"
-                label-for="task-title"
+                label-for="todo-title"
               >
                 <b-form-input
-                  id="task-title"
-                  v-model="taskLocal.title"
+                  id="todo-title"
+                  v-model="todoLocal.title"
                   autofocus
                   :state="getValidationState(validationContext)"
                   trim
-                  placeholder="Task Title"
+                  placeholder="Todo Title"
                 />
 
                 <b-form-invalid-feedback>
@@ -96,7 +96,7 @@
               label-for="assignee"
             >
               <v-select
-                v-model="taskLocal.assignee"
+                v-model="todoLocal.assignee"
                 :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                 :options="assigneeOptions"
                 label="fullName"
@@ -116,7 +116,7 @@
                   <b-avatar
                     size="26"
                     :src="avatar"
-                    :variant="`light-${resolveAvatarVariant(taskLocal.tags)}`"
+                    :variant="`light-${resolveAvatarVariant(todoLocal.tags)}`"
                     :text="avatarText(fullName)"
                   />
 
@@ -137,7 +137,7 @@
                 label-for="due-date"
               >
                 <flat-pickr
-                  v-model="taskLocal.dueDate"
+                  v-model="todoLocal.dueDate"
                   class="form-control"
                 />
                 <b-form-invalid-feedback :state="getValidationState(validationContext)">
@@ -152,7 +152,7 @@
               label-for="tag"
             >
               <v-select
-                v-model="taskLocal.tags"
+                v-model="todoLocal.tags"
                 :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                 multiple
                 :close-on-select="false"
@@ -165,11 +165,11 @@
             <!-- Description -->
             <b-form-group
               label="Description"
-              label-for="task-description"
+              label-for="todo-description"
             >
               <quill-editor
                 id="quil-content"
-                v-model="taskLocal.description"
+                v-model="todoLocal.description"
                 :options="editorOption"
                 class="border-bottom-0"
               />
@@ -194,7 +194,7 @@
                 class="mr-2"
                 type="submit"
               >
-                {{ taskLocal.id ? 'Update' : 'Add ' }}
+                {{ todoLocal.id ? 'Update' : 'Add ' }}
               </b-button>
               <b-button
                 v-ripple.400="'rgba(186, 191, 199, 0.15)'"
@@ -224,7 +224,7 @@ import { avatarText } from '@core/utils/filter'
 import formValidation from '@core/comp-functions/forms/form-validation'
 import { toRefs } from '@vue/composition-api'
 import { quillEditor } from 'vue-quill-editor'
-import useTaskHandler from './useTaskHandler'
+import useTodoHandler from './useTodoHandler'
 
 export default {
   components: {
@@ -250,19 +250,19 @@ export default {
     Ripple,
   },
   model: {
-    prop: 'isTaskHandlerSidebarActive',
-    event: 'update:is-task-handler-sidebar-active',
+    prop: 'isTodoHandlerSidebarActive',
+    event: 'update:is-todo-handler-sidebar-active',
   },
   props: {
-    isTaskHandlerSidebarActive: {
+    isTodoHandlerSidebarActive: {
       type: Boolean,
       required: true,
     },
-    task: {
+    todo: {
       type: Object,
       required: true,
     },
-    clearTaskData: {
+    clearTodoData: {
       type: Function,
       required: true,
     },
@@ -276,22 +276,22 @@ export default {
   },
   setup(props, { emit }) {
     const {
-      taskLocal,
-      resetTaskLocal,
+      todoLocal,
+      resetTodoLocal,
 
       // UI
       assigneeOptions,
       onSubmit,
       tagOptions,
       resolveAvatarVariant,
-    } = useTaskHandler(toRefs(props), emit)
+    } = useTodoHandler(toRefs(props), emit)
 
     const {
       refFormObserver,
       getValidationState,
       resetForm,
       clearForm,
-    } = formValidation(resetTaskLocal, props.clearTaskData)
+    } = formValidation(resetTodoLocal, props.clearTodoData)
 
     const editorOption = {
       modules: {
@@ -302,7 +302,7 @@ export default {
 
     return {
       // Add New
-      taskLocal,
+      todoLocal,
       onSubmit,
       assigneeOptions,
       tagOptions,

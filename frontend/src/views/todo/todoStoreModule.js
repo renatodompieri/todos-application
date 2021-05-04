@@ -6,7 +6,7 @@ export default {
   getters: {},
   mutations: {},
   actions: {
-    fetchTasks(ctx, payload) {
+    fetchTodos(ctx, payload) {
       return new Promise((resolve, reject) => {
         axios
           .get('v1/todo', { params: payload })
@@ -14,23 +14,23 @@ export default {
           .catch(error => reject(error))
       })
     },
-    addTask(ctx, taskData) {
+    addTodo(ctx, todoData) {
       return new Promise((resolve, reject) => {
         axios
-          .post('v1/todo', { taskData })
+          .post('v1/todo', { todo: todoData })
           .then(response => resolve(response))
           .catch(error => reject(error))
       })
     },
-    updateTask(ctx, { task }) {
+    updateTodo(ctx, { todo }) {
       return new Promise((resolve, reject) => {
         axios
-          .patch(`v1/todo/${task.id}`, { task })
+          .patch(`v1/todo/${todo.id}`, { todo })
           .then(response => resolve(response))
           .catch(error => reject(error))
       })
     },
-    removeTask(ctx, { id }) {
+    removeTodo(ctx, { id }) {
       return new Promise((resolve, reject) => {
         axios
           .delete(`v1/todo/${id}`)

@@ -23,7 +23,7 @@
         .todo-app-menu {
           width: 100%;
           z-index: 3;
-          .add-task {
+          .add-todo {
             padding: 1.5rem;
           }
 
@@ -66,11 +66,11 @@
     .content-right {
       width: calc(100% - #{$menu-expanded-width});
       border-left: 1px solid $border-color;
-      .todo-app-list {
+      .todo-list {
         height: inherit;
       }
       // Todo Fixed search
-      .app-fixed-search {
+      .fixed-search {
         padding: 0.35rem 0.5rem;
         border-bottom: 1px solid $border-color;
         background-color: $white;
@@ -94,13 +94,13 @@
           color: $text-muted;
         }
       }
-      // ToDo task list area
-      .todo-task-list-wrapper {
+      // ToDo todo list area
+      .todo-todo-list-wrapper {
         position: relative;
         height: calc(100% - 3.56rem); // ? search box height (3.49rem) + 1px bottom border till 2 decimals
         background-color: $white;
         border-radius: 0;
-        .todo-task-list {
+        .todo-todo-list {
           padding: 0;
           margin: 0;
           list-style: none;
@@ -195,7 +195,7 @@
   }
 }
 
-// while dragging task
+// while dragging todo
 .gu-mirror {
   list-style-type: none;
   list-style: none;
@@ -267,7 +267,7 @@
       .content-right {
         width: 100%;
         border-left: 0;
-        .app-fixed-search {
+        .fixed-search {
           border-top-left-radius: $border-radius;
         }
       }
@@ -295,6 +295,6 @@
     width: 230px;
   }
 }
-.horizontal-menu .todo-application .content-area-wrapper .content-right .todo-task-list-wrapper {
+.horizontal-menu .todo-application .content-area-wrapper .content-right .todo-todo-list-wrapper {
   height: calc(100% - 3.6rem); // ? search box height (48.79px + 1px border = 3.56), horizontal needs 1 decimal point
 }

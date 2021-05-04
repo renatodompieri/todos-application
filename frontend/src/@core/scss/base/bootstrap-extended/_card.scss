@@ -217,9 +217,9 @@
   }
 }
 
-// Employee Task Card
-.card-employee-task {
-  .employee-task {
+// Employee Todo Card
+.card-employee-todo {
+  .employee-todo {
     &:not(:last-child) {
       margin-bottom: 1.5rem;
     }

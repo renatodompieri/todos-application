@@ -6,6 +6,7 @@ use App\Enums\CrudActionEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Modules\Todo\Entities\Todo;
 use Modules\Todo\Http\Requests\TodoStoreRequest;
 use Modules\Todo\Http\Requests\TodoUpdateRequest;
@@ -29,11 +30,14 @@ class TodoV1Controller extends Controller
     /**
      * Used to get all Todos
      * @get ("/api/v1/todo")
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->ok($this->repo->all()->jsonSerialize());
+        $filter = $request->get('filter');
+
+        return $this->ok($this->repo->findByFilter($filter)->jsonSerialize());
     }
 
     /**
@@ -50,7 +54,7 @@ class TodoV1Controller extends Controller
     public function store(TodoStoreRequest $request): JsonResponse
     {
         $this->authorize(CrudActionEnum::CREATE, Todo::class);
-        $parameters = $this->repo->formatAttributes($request->all(), CrudActionEnum::CREATE());
+        $parameters = $this->repo->formatAttributes($request->get('todo'), CrudActionEnum::CREATE());
         $todo = $this->repo->create($parameters);
 
         return $this->success(['data' => $todo, 'message' => trans('todo.added')]);
@@ -112,7 +116,7 @@ class TodoV1Controller extends Controller
         $todo = $this->repo->find($id);
 
         $this->authorize(CrudActionEnum::UPDATE, $todo);
-        $attributes = $this->repo->formatAttributes($request->all());
+        $attributes = $this->repo->formatAttributes($request->get('todo'));
         $todo = $this->repo->update($attributes, $id);
 
         return $this->success(['data' => $todo, 'message' => trans('todo.updated')]);
