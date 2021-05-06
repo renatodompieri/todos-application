@@ -265,6 +265,7 @@ export default {
     }
 
     const addTodo = val => {
+      console.log(val)
       store.dispatch('todo/addTodo', val)
         .then(() => {
           // eslint-disable-next-line no-use-before-define

@@ -26,7 +26,7 @@ class TodoStoreRequest extends FormRequest
         return [
             'title' => 'required',
             'date' => 'sometimes|required|date_format:Y-m-d',
-            'assignee_id' => 'sometimes|integer|exists:user,id',
+            'assignee_id' => 'sometimes|integer|exists:users,id',
         ];
     }
 

@@ -54,7 +54,7 @@ class TodoV1Controller extends Controller
     public function store(TodoStoreRequest $request): JsonResponse
     {
         $this->authorize(CrudActionEnum::CREATE, Todo::class);
-        $parameters = $this->repo->formatAttributes($request->get('todo'), CrudActionEnum::CREATE());
+        $parameters = $this->repo->formatAttributes($request->all(), CrudActionEnum::CREATE());
         $todo = $this->repo->create($parameters);
 
         return $this->success(['data' => $todo, 'message' => trans('todo.added')]);
@@ -116,7 +116,7 @@ class TodoV1Controller extends Controller
         $todo = $this->repo->find($id);
 
         $this->authorize(CrudActionEnum::UPDATE, $todo);
-        $attributes = $this->repo->formatAttributes($request->get('todo'));
+        $attributes = $this->repo->formatAttributes($request->all());
         $todo = $this->repo->update($attributes, $id);
 
         return $this->success(['data' => $todo, 'message' => trans('todo.updated')]);

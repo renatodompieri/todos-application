@@ -216,10 +216,10 @@ export default {
                     component: ToastificationContent,
                     position: 'top-right',
                     props: {
-                      title: $t("login.title"),
+                      title: this.$t('login.title'),
                       icon: 'CoffeeIcon',
                       variant: 'success',
-                      text: $t("login.message"),
+                      text: this.$t('login.message'),
                     },
                   })
                 })

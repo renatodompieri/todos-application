@@ -4,6 +4,7 @@ namespace Modules\Todo\Entities;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Todo extends Model
 {
@@ -11,6 +12,7 @@ class Todo extends Model
 
     protected $fillable = [
         'user_id',
+        'assignee_id',
         'title',
         'description',
         'status',
@@ -20,44 +22,14 @@ class Todo extends Model
     protected $primaryKey = 'id';
     protected $table = 'todos';
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function scopeFilterByTitleOrDescription($q, $keyword = null)
+    public function assignee(): BelongsTo
     {
-        if (!$keyword) {
-            return $q;
-        }
-
-        return $q->where('title', 'like', '%' . $keyword . '%')->orWhere('description', 'like', '%' . $keyword . '%');
+        return $this->belongsTo('App\Models\User', 'assignee_id', 'id');
     }
 
-    public function scopeFilterCompletedTodo($q, $status = null)
-    {
-        if (!$status) {
-            return $q;
-        }
-
-        return $q->whereStatus(1);
-    }
-
-    public function scopeFilterByUserId($q, $user_id = null)
-    {
-        if (!$user_id) {
-            return $q;
-        }
-
-        return $q->whereUserId($user_id);
-    }
-
-    public function scopeDateBetween($q, $dates)
-    {
-        if ((!$dates['start_date'] || !$dates['end_date']) && $dates['start_date'] <= $dates['end_date']) {
-            return $q;
-        }
-
-        return $q->where('date', '>=', getStartOfDate($dates['start_date']))->where('date', '<=', getEndOfDate($dates['end_date']));
-    }
 }

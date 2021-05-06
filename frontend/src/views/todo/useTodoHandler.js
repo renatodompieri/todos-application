@@ -19,11 +19,11 @@ export default function useTodoHandler(props, emit) {
     const todoObj = todoData.value
     const filteredTodo = {
       id: todoObj.id || null,
-      assignee_id: todoObj.assignee.assignee_id || null,
+      assignee_id: todoObj.assignee.id || null,
       title: todoObj.title || null,
       description: todoObj.description || null,
       status: 1,
-      date: todoObj.date || null,
+      date: todoObj.dueDate || null,
       tags: todoObj.tags || null,
       important: todoObj.important || null,
     }

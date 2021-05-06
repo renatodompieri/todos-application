@@ -17,7 +17,7 @@ export default {
     addTodo(ctx, todoData) {
       return new Promise((resolve, reject) => {
         axios
-          .post('v1/todo', { todo: todoData })
+          .post('v1/todo', todoData)
           .then(response => resolve(response))
           .catch(error => reject(error))
       })
@@ -25,7 +25,7 @@ export default {
     updateTodo(ctx, { todo }) {
       return new Promise((resolve, reject) => {
         axios
-          .patch(`v1/todo/${todo.id}`, { todo })
+          .patch(`v1/todo/${todo.id}`, todo)
           .then(response => resolve(response))
           .catch(error => reject(error))
       })
