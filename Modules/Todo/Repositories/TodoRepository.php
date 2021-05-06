@@ -37,7 +37,7 @@ class TodoRepository extends BaseRepository
             'tags' => $params['tags'] ?? null,
         ];
 
-        if ($action->value === CrudActionEnum::CREATE) {
+        if ($action->value === CrudActionEnum::STORE) {
             $formatted['user_id'] = \Auth::user()->id;
         }
 

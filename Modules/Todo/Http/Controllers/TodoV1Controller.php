@@ -45,7 +45,6 @@ class TodoV1Controller extends Controller
      * @post ("/api/v1/todo")
      * @param TodoStoreRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      * @throws ValidatorException
      * @Parameter("title", type="string", required="true", description="Title of Todo"),
      * @Parameter("date", type="date", required="true", description="Due date of Todo"),
@@ -53,8 +52,7 @@ class TodoV1Controller extends Controller
      */
     public function store(TodoStoreRequest $request): JsonResponse
     {
-        $this->authorize(CrudActionEnum::CREATE, Todo::class);
-        $parameters = $this->repo->formatAttributes($request->all(), CrudActionEnum::CREATE());
+        $parameters = $this->repo->formatAttributes($request->all(), CrudActionEnum::STORE());
         $todo = $this->repo->create($parameters);
 
         return $this->success(['data' => $todo, 'message' => trans('todo.added')]);
@@ -67,13 +65,11 @@ class TodoV1Controller extends Controller
      * @Parameter("id", type="integer", required="true", description="Id of Todo"),
      * })
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function show($id): JsonResponse
     {
         $todo = $this->repo->find($id);
 
-        $this->authorize(CrudActionEnum::UPDATE, $todo);
 
         return $this->ok($todo);
     }
@@ -85,13 +81,11 @@ class TodoV1Controller extends Controller
      * @Parameter("id", type="integer", required="true", description="Id of Todo"),
      * })
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function toggleStatus($id): JsonResponse
     {
         $todo = $this->repo->find($id);
 
-        $this->authorize(CrudActionEnum::UPDATE, $todo);
 
         $todo = $this->repo->toggle($todo);
 
@@ -104,7 +98,6 @@ class TodoV1Controller extends Controller
      * @param ({
      * @param TodoUpdateRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      * @throws ValidatorException
      * @Parameter("id", type="integer", required="true", description="Id of Todo"),
      * @Parameter("title", type="string", required="true", description="Title of Todo"),
@@ -115,7 +108,6 @@ class TodoV1Controller extends Controller
     {
         $todo = $this->repo->find($id);
 
-        $this->authorize(CrudActionEnum::UPDATE, $todo);
         $attributes = $this->repo->formatAttributes($request->all());
         $todo = $this->repo->update($attributes, $id);
 
@@ -129,12 +121,10 @@ class TodoV1Controller extends Controller
      * @Parameter("id", type="integer", required="true", description="Id of Todo"),
      * })
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy($id): JsonResponse
     {
         $todo = $this->repo->find($id);
-        $this->authorize(CrudActionEnum::DESTROY, $todo);
 
         $this->repo->delete($todo->id);
 

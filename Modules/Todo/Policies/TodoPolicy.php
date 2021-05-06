@@ -15,7 +15,7 @@ class TodoPolicy
         return true;
     }
 
-    public function create(): bool
+    public function store(): bool
     {
         return true;
     }
