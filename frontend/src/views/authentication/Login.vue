@@ -38,10 +38,10 @@
             class="mb-1 font-weight-bold"
             title-tag="h2"
           >
-            Welcome to Todos! 👋
+            {{ $t("login.welcomeMessage") }}
           </b-card-title>
           <b-card-text class="mb-2">
-            Please sign-in to your account and start the adventure
+            {{ $t("login.signinMessage") }}
           </b-card-text>
 
           <b-alert
@@ -126,7 +126,7 @@
                 block
                 :disabled="invalid"
               >
-                Sign in
+                {{ $t("login.signin") }}
               </b-button>
             </b-form>
           </validation-observer>
@@ -216,10 +216,10 @@ export default {
                     component: ToastificationContent,
                     position: 'top-right',
                     props: {
-                      title: `Welcome ${userData.fullName || userData.username}`,
+                      title: $t("login.title"),
                       icon: 'CoffeeIcon',
                       variant: 'success',
-                      text: `You have successfully logged in as ${userData.role}. Hope you enjoy your stay!`,
+                      text: $t("login.message"),
                     },
                   })
                 })
