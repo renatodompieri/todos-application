@@ -4,6 +4,7 @@ namespace Modules\Todo\Repositories;
 
 use App\Enums\CrudActionEnum;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Modules\Todo\Entities\Todo;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -31,14 +32,14 @@ class TodoRepository extends BaseRepository
             'title' => $params['title'] ?? null,
             'assignee_id' => $params['assignee_id'] ?? null,
             'description' => $params['description'] ?? null,
-            'date' => $params['date'] ?? null,
+            'date' => date('Y-m-d', strtotime($params['date'])) ?? null,
             'status' => $params['status'] ?? null,
             'completed_at' => $params['completed_at'] ?? null,
             'tags' => $params['tags'] ?? null,
         ];
 
         if ($action->value === CrudActionEnum::STORE) {
-            $formatted['user_id'] = \Auth::user()->id;
+            $formatted['user_id'] = Auth::user()->xid ?? 1;
         }
 
         return $formatted;

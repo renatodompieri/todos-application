@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+import i18n from '@/libs/i18n'
 
 import router from './router'
 import store from './store'
@@ -30,6 +31,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  i18n,
   store,
   render: h => h(App),
 }).$mount('#app')

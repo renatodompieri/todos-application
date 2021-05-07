@@ -25,7 +25,6 @@ class TodoStoreRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'date' => 'sometimes|required|date_format:Y-m-d',
             'assignee_id' => 'sometimes|integer|exists:users,id',
         ];
     }
@@ -39,11 +38,7 @@ class TodoStoreRequest extends FormRequest
     {
         return [
             'title' => trans('todo.title'),
-            'date' => trans('todo.date'),
-            'description' => trans('todo.description'),
             'assignee_id' => trans('todo.assignee_id'),
-            'user_id' => trans('todo.user_id'),
-            'tags' => trans('todo.tags'),
         ];
     }
 }

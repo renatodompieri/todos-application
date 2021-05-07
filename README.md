@@ -1,3 +1,7 @@
+# WIP
+
+This is still being developed. Its EAT is on Sunday (May 9)
+
 # Overview
 
 This is a simple application created on top of Laravel 8 and Vue.js.

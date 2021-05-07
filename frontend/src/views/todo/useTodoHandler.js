@@ -15,8 +15,8 @@ export default function useTodoHandler(props, emit) {
 
   const onSubmit = () => {
     const todoData = JSON.parse(JSON.stringify(todoLocal))
-
     const todoObj = todoData.value
+    console.log(todoObj, todoObj.assignee.id)
     const filteredTodo = {
       id: todoObj.id || null,
       assignee_id: todoObj.assignee.id || null,
