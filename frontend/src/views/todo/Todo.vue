@@ -87,7 +87,7 @@
             v-for="todo in todos"
             :key="todo.id"
             class="todo-item"
-            :class="{ 'completed': todo.isCompleted }"
+            :class="{ 'completed': todo.completed_at !== null }"
             @click="handleTodoClick(todo)"
           >
             <feather-icon
@@ -98,7 +98,7 @@
               <div class="todo-title-area">
                 <div class="title-wrapper">
                   <b-form-checkbox
-                    :checked="todo.isCompleted"
+                    :checked="todo.completed_at !== null"
                     @click.native.stop
                     @change="updateTodoIsCompleted(todo)"
                   />
@@ -108,7 +108,7 @@
               <div class="todo-item-action">
                 <div class="badge-wrapper mr-1">
                   <b-badge
-                    v-for="tag in todo.tags"
+                    v-for="tag in assureJsonElement(todo.tags)"
                     :key="tag"
                     pill
                     :variant="`light-${resolveTagVariant(tag)}`"
@@ -117,7 +117,7 @@
                     {{ tag }}
                   </b-badge>
                 </div>
-                <small class="text-nowrap text-muted mr-1">{{ formatDate(todo.dueDate, { month: 'short', day: 'numeric'}) }}</small>
+                <small class="text-nowrap text-muted mr-1">{{ formatDate(todo.date, {month: 'short', day: 'numeric'}) }}</small>
                 <b-avatar
                   v-if="todo.assignee"
                   size="32"
@@ -245,27 +245,29 @@ export default {
 
       delete currentRouteQuery.sort
 
-      router.replace({ name: route.name, query: currentRouteQuery }).catch(() => {})
+      router.replace({ name: route.name, query: currentRouteQuery }).catch(() => {
+      })
     }
 
     const blankTodo = {
       id: null,
       title: '',
-      dueDate: new Date(),
+      date: new Date(),
       description: '',
       assignee: null,
+      assignee_id: null,
       tags: [],
-      isCompleted: false,
+      completed_at: null,
       isDeleted: false,
-      isImportant: false,
+      important: false,
     }
+
     const todo = ref(JSON.parse(JSON.stringify(blankTodo)))
     const clearTodoData = () => {
       todo.value = JSON.parse(JSON.stringify(blankTodo))
     }
 
     const addTodo = val => {
-      console.log(val)
       store.dispatch('todo/addTodo', val)
         .then(() => {
           // eslint-disable-next-line no-use-before-define
@@ -280,7 +282,15 @@ export default {
         })
     }
     const updateTodo = todoData => {
-      store.dispatch('todo/updateTodo', { todo: todoData })
+      store.dispatch('todo/updateTodo', todoData)
+        .then(() => {
+          // eslint-disable-next-line no-use-before-define
+          fetchTodos()
+        })
+    }
+
+    const toggleStatus = todoData => {
+      store.dispatch('todo/toggleStatus', todoData)
         .then(() => {
           // eslint-disable-next-line no-use-before-define
           fetchTodos()
@@ -345,22 +355,31 @@ export default {
         sortBy: sortBy.value,
       })
         .then(response => {
+          // eslint-disable-next-line
           todos.value = response.data
         })
     }
 
     fetchTodos()
 
-    const handleTodoClick = todoData => {
-      todo.value = todoData
-      isTodoHandlerSidebarActive.value = true
-    }
-
     // Single Todo isCompleted update
     const updateTodoIsCompleted = todoData => {
       // eslint-disable-next-line no-param-reassign
-      todoData.isCompleted = !todoData.isCompleted
-      updateTodo(todoData)
+      toggleStatus(todoData)
+    }
+
+    const assureJsonElement = tags => {
+      try {
+        return JSON.parse(tags)
+      } catch (e) {
+        return tags
+      }
+    }
+
+    const handleTodoClick = todoData => {
+      todo.value = todoData
+      todo.value.tags = assureJsonElement(todo.value.tags)
+      isTodoHandlerSidebarActive.value = true
     }
 
     const { mqShallShowLeftSidebar } = useResponsiveAppLeftSidebarVisibility()
@@ -369,6 +388,8 @@ export default {
       todo,
       todos,
       removeTodo,
+      toggleStatus,
+      assureJsonElement,
       addTodo,
       updateTodo,
       clearTodoData,
@@ -401,21 +422,21 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.draggable-todo-handle {
-position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    visibility: hidden;
-    cursor: move;
-
-    .todo-list .todo-item:hover & {
-      visibility: visible;
-    }
-}
-</style>
-
 <style lang="scss">
 @import "~@core/scss/base/pages/app-todo.scss";
+</style>
+
+<style lang="scss" scoped>
+.draggable-todo-handle {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  visibility: hidden;
+  cursor: move;
+
+  .todo-list .todo-item:hover & {
+    visibility: visible;
+  }
+}
 </style>

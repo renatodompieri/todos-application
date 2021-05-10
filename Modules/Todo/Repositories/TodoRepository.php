@@ -32,14 +32,14 @@ class TodoRepository extends BaseRepository
             'title' => $params['title'] ?? null,
             'assignee_id' => $params['assignee_id'] ?? null,
             'description' => $params['description'] ?? null,
-            'date' => date('Y-m-d', strtotime($params['date'])) ?? null,
-            'status' => $params['status'] ?? null,
+            'date' => isset($params['date']) ? date('Y-m-d', strtotime($params['date'])) : null,
+            'status' => $params['status'] ?? false,
             'completed_at' => $params['completed_at'] ?? null,
             'tags' => $params['tags'] ?? null,
         ];
 
         if ($action->value === CrudActionEnum::STORE) {
-            $formatted['user_id'] = Auth::user()->xid ?? 1;
+            $formatted['user_id'] = auth()->user()->id;
         }
 
         return $formatted;

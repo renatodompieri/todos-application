@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Lanin\Laravel\ApiDebugger\Debugger;
 use Modules\Todo\Entities\Todo;
 use Modules\Todo\Http\Requests\TodoStoreRequest;
 use Modules\Todo\Http\Requests\TodoUpdateRequest;
@@ -70,7 +71,6 @@ class TodoV1Controller extends Controller
     {
         $todo = $this->repo->find($id);
 
-
         return $this->ok($todo);
     }
 
@@ -85,11 +85,21 @@ class TodoV1Controller extends Controller
     public function toggleStatus($id): JsonResponse
     {
         $todo = $this->repo->find($id);
-
-
         $todo = $this->repo->toggle($todo);
 
         return $this->success(['message' => trans('todo.updated'), 'data' => $todo]);
+    }
+
+    /**
+     * Used to prepare all select elements to the front-end
+     * Might be: tags, users, etc.
+     *
+     * @get ("/api/v1/todo/prepare-elements")
+     * @return JsonResponse
+     */
+    public function prepareSelectElements(): JsonResponse
+    {
+        // @todo
     }
 
     /**
@@ -106,11 +116,8 @@ class TodoV1Controller extends Controller
      */
     public function update($id, TodoUpdateRequest $request): JsonResponse
     {
-        $todo = $this->repo->find($id);
-
-        $attributes = $this->repo->formatAttributes($request->all());
+        $attributes = $this->repo->formatAttributes($request->all(), CrudActionEnum::UPDATE());
         $todo = $this->repo->update($attributes, $id);
-
         return $this->success(['data' => $todo, 'message' => trans('todo.updated')]);
     }
 

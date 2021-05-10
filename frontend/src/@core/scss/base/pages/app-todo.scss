@@ -95,12 +95,12 @@
         }
       }
       // ToDo todo list area
-      .todo-todo-list-wrapper {
+      .todo-list-wrapper {
         position: relative;
         height: calc(100% - 3.56rem); // ? search box height (3.49rem) + 1px bottom border till 2 decimals
         background-color: $white;
         border-radius: 0;
-        .todo-todo-list {
+        .todo-list {
           padding: 0;
           margin: 0;
           list-style: none;
@@ -295,6 +295,6 @@
     width: 230px;
   }
 }
-.horizontal-menu .todo-application .content-area-wrapper .content-right .todo-todo-list-wrapper {
+.horizontal-menu .todo-application .content-area-wrapper .content-right .todo-list-wrapper {
   height: calc(100% - 3.6rem); // ? search box height (48.79px + 1px border = 3.56), horizontal needs 1 decimal point
 }

@@ -4,15 +4,12 @@ This is still being developed. Its EAT is on Sunday (May 9)
 
 #### Next changes:
 
-- Remove third-part packages for repositories
-- Fix front-end bugs
 - Make user list in the todo be functional
-- Develop logout function
-- Improve todo listing
 - Develop todo search function
-- Develop "done" definition in the front-end
-- Develop update todo in the front-end
-- Improve front-end
+- Remove third-part packages for repositories
+- Develop delete function
+- Develop reorder function
+- Transform constants in methods in Todo.vue
 
 ---
 

@@ -6,5 +6,14 @@
         "signin": "Sign in",
         "signinMessage": "Please sign-in to your account and start the adventure"
     },
+    "todo": {
+        "title": "Title",
+        "description": "Description",
+        "status": "Status",
+        "assignee": "Assigned to",
+        "due_date": "Due Date",
+        "tag": "Tag",
+        "description_placeholder": "Write the todo's description here"
+    },
     "name": "Value"
 }

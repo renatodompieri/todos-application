@@ -21,7 +21,7 @@
             :variant="todoLocal.isCompleted ? 'outline-success' : 'outline-secondary'"
             @click="todoLocal.isCompleted = !todoLocal.isCompleted"
           >
-            {{ todoLocal.isCompleted ? 'Completed' : 'Mark Complete' }}
+            {{ todoLocal.completed_at !== null ? 'Completed' : 'Mark Complete' }}
           </b-button>
           <h5
             v-else
@@ -40,8 +40,8 @@
               class="ml-1 cursor-pointer"
               icon="StarIcon"
               size="16"
-              :class="{ 'text-warning': todoLocal.isImportant }"
-              @click="todoLocal.isImportant = !todoLocal.isImportant"
+              :class="{ 'text-warning': todoLocal.important }"
+              @click="todoLocal.important = !todoLocal.important"
             />
             <feather-icon
               class="ml-1 cursor-pointer"
@@ -72,7 +72,7 @@
               rules="required"
             >
               <b-form-group
-                label="Title"
+                :label="$t('todo.title')"
                 label-for="todo-title"
               >
                 <b-form-input
@@ -92,7 +92,7 @@
 
             <!-- Assignee -->
             <b-form-group
-              label="Assignee"
+              :label="$t('todo.assignee')"
               label-for="assignee"
             >
               <v-select
@@ -128,16 +128,15 @@
             <!-- due Date -->
             <validation-provider
               #default="validationContext"
-              name="Due Date"
-              rules="required"
+              :name="$t('todo.due_date')"
             >
 
               <b-form-group
-                label="Due Date"
+                :label="$t('todo.due_date')"
                 label-for="due-date"
               >
                 <flat-pickr
-                  v-model="todoLocal.dueDate"
+                  v-model="todoLocal.date"
                   class="form-control"
                 />
                 <b-form-invalid-feedback :state="getValidationState(validationContext)">
@@ -148,7 +147,7 @@
 
             <!--Tag -->
             <b-form-group
-              label="Tag"
+              :label="$t('todo.tag')"
               label-for="tag"
             >
               <v-select
@@ -164,7 +163,7 @@
 
             <!-- Description -->
             <b-form-group
-              label="Description"
+              :label="$t('todo.description')"
               label-for="todo-description"
             >
               <quill-editor
@@ -297,7 +296,7 @@ export default {
       modules: {
         toolbar: '#quill-toolbar',
       },
-      placeholder: 'Write your description',
+      placeholder: '',
     }
 
     return {

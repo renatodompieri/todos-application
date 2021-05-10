@@ -175,7 +175,6 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      locale: this.$i18n.locale,
       password: 'admin',
       userEmail: 'admin@admin.com',
       sideImg: require('@/assets/images/pages/login-v2.svg'),
@@ -183,11 +182,6 @@ export default {
       required,
       email,
     }
-  },
-  watch: {
-    locale(val) {
-      this.$i18n.locale = val
-    },
   },
   computed: {
     passwordToggleIcon() {

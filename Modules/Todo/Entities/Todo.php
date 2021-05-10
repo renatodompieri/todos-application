@@ -16,6 +16,7 @@ class Todo extends Model
         'title',
         'description',
         'status',
+        'tags',
         'date',
         'completed_at'
     ];

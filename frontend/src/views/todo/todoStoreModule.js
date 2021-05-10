@@ -22,7 +22,15 @@ export default {
           .catch(error => reject(error))
       })
     },
-    updateTodo(ctx, { todo }) {
+    toggleStatus(ctx, todo) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(`v1/todo/${todo.id}/status`, todo)
+          .then(response => resolve(response))
+          .catch(error => reject(error))
+      })
+    },
+    updateTodo(ctx, todo) {
       return new Promise((resolve, reject) => {
         axios
           .patch(`v1/todo/${todo.id}`, todo)
@@ -30,10 +38,18 @@ export default {
           .catch(error => reject(error))
       })
     },
-    removeTodo(ctx, { id }) {
+    removeTodo(ctx, id) {
       return new Promise((resolve, reject) => {
         axios
           .delete(`v1/todo/${id}`)
+          .then(response => resolve(response))
+          .catch(error => reject(error))
+      })
+    },
+    prepareTodoElements() {
+      return new Promise((resolve, reject) => {
+        axios
+          .patch('v1/todo/prepare-elements')
           .then(response => resolve(response))
           .catch(error => reject(error))
       })

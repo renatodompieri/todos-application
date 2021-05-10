@@ -25,7 +25,7 @@ class TodoUpdateRequest extends FormRequest
     {
         return [
             'title' => 'sometimes|required',
-            'assignee_id' => 'sometimes|integer|exists:users,id',
+            'assignee_id' => 'nullable|integer|exists:users,id',
         ];
     }
 
