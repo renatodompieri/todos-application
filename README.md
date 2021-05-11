@@ -4,13 +4,11 @@ This is still being developed. Its EAT is on Sunday (May 9)
 
 #### Next changes:
 
-- Remove third-part packages for repositories
 - Develop todo search function
 - Develop delete function
 - Develop sort function
 - Develop reorder function
-- Transform constants in methods in Todo.vue
-- Completed/Incomplete button in todo status should change status as well
+- Remove third-part packages for repositories
 
 ---
 
