@@ -81,6 +81,6 @@ class TodoRepository extends BaseRepository
             return $this->findByField('status', 0);
         }
 
-        return $this->all();
+        return $this->with('assignee')->all();
     }
 }

@@ -46,10 +46,10 @@ export default {
           .catch(error => reject(error))
       })
     },
-    prepareTodoElements() {
+    prepareSelectElements() {
       return new Promise((resolve, reject) => {
         axios
-          .patch('v1/todo/prepare-elements')
+          .get('v1/todo/prepare-elements')
           .then(response => resolve(response))
           .catch(error => reject(error))
       })

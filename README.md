@@ -4,18 +4,19 @@ This is still being developed. Its EAT is on Sunday (May 9)
 
 #### Next changes:
 
-- Make user list in the todo be functional
-- Develop todo search function
 - Remove third-part packages for repositories
+- Develop todo search function
 - Develop delete function
+- Develop sort function
 - Develop reorder function
 - Transform constants in methods in Todo.vue
+- Completed/Incomplete button in todo status should change status as well
 
 ---
 
 # Overview
 
-This is a simple application created on top of Laravel 8 and Vue.js.
+This is a simple application created on top of Laravel 8 and Vue 3.
 
 Basically it was made only to show the Modular / Repository architecture
 that I like, combined with some good practices, such as feature tests, 

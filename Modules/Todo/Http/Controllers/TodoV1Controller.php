@@ -4,6 +4,7 @@ namespace Modules\Todo\Http\Controllers;
 
 use App\Enums\CrudActionEnum;
 use App\Http\Controllers\Controller;
+use App\Repositories\UserRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,15 +18,17 @@ use Prettus\Validator\Exceptions\ValidatorException;
 class TodoV1Controller extends Controller
 {
     private $repo;
+    private $userRepository;
 
     /**
      * Instantiate a new controller instance.
      *
      * @return void
      */
-    public function __construct(TodoRepository $repo)
+    public function __construct(TodoRepository $repo, UserRepository $userRepository)
     {
         $this->repo = $repo;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -99,7 +102,8 @@ class TodoV1Controller extends Controller
      */
     public function prepareSelectElements(): JsonResponse
     {
-        // @todo
+        $users = $this->userRepository->all();
+        return $this->success(['message' => trans('todo.success'), 'users' => $users ]);
     }
 
     /**

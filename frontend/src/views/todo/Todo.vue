@@ -152,6 +152,7 @@
     <!-- Todo Handler -->
     <todo-handler-sidebar
       v-model="isTodoHandlerSidebarActive"
+      :assignee-options="assigneeOptions"
       :todo="todo"
       :clear-todo-data="clearTodoData"
       @remove-todo="removeTodo"
@@ -227,7 +228,6 @@ export default {
     })
 
     const todos = ref([])
-
     const sortOptions = [
       'latest',
       'title-asc',
@@ -235,11 +235,13 @@ export default {
       'assignee',
       'due-date',
     ]
+
     const sortBy = ref(routeSortBy.value)
     watch(routeSortBy, val => {
       if (sortOptions.includes(val)) sortBy.value = val
       else sortBy.value = val
     })
+
     const resetSortAndNavigate = () => {
       const currentRouteQuery = JSON.parse(JSON.stringify(route.value.query))
 
@@ -248,6 +250,15 @@ export default {
       router.replace({ name: route.name, query: currentRouteQuery }).catch(() => {
       })
     }
+    const assigneeOptions = ref([])
+    const prepareSelectElements = () => {
+      store.dispatch('todo/prepareSelectElements')
+        .then(response => {
+          assigneeOptions.value = response.data.users
+        })
+    }
+
+    prepareSelectElements()
 
     const blankTodo = {
       id: null,
@@ -387,6 +398,7 @@ export default {
     return {
       todo,
       todos,
+      assigneeOptions,
       removeTodo,
       toggleStatus,
       assureJsonElement,

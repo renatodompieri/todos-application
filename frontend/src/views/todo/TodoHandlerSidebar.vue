@@ -99,28 +99,28 @@
                 v-model="todoLocal.assignee"
                 :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                 :options="assigneeOptions"
-                label="fullName"
+                label="name"
                 class="assignee-selector"
                 input-id="assignee"
               >
 
-                <template #option="{ avatar, fullName }">
+                <template #option="{ avatar, name }">
                   <b-avatar
                     size="26"
                     :src="avatar"
                   />
-                  <span class="ml-50 d-inline-block align-middle"> {{ fullName }}</span>
+                  <span class="ml-50 d-inline-block align-middle"> {{ name }}</span>
                 </template>
 
-                <template #selected-option="{ avatar, fullName }">
+                <template #selected-option="{ avatar, name }">
                   <b-avatar
                     size="26"
                     :src="avatar"
                     :variant="`light-${resolveAvatarVariant(todoLocal.tags)}`"
-                    :text="avatarText(fullName)"
+                    :text="avatarText(name)"
                   />
 
-                  <span class="ml-50 d-inline-block align-middle"> {{ fullName }}</span>
+                  <span class="ml-50 d-inline-block align-middle"> {{ name }}</span>
                 </template>
               </v-select>
             </b-form-group>
@@ -257,6 +257,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    assigneeOptions: {
+      type: Array,
+      required: true,
+    },
     todo: {
       type: Object,
       required: true,
@@ -278,8 +282,6 @@ export default {
       todoLocal,
       resetTodoLocal,
 
-      // UI
-      assigneeOptions,
       onSubmit,
       tagOptions,
       resolveAvatarVariant,
@@ -303,7 +305,6 @@ export default {
       // Add New
       todoLocal,
       onSubmit,
-      assigneeOptions,
       tagOptions,
 
       // Form Validation

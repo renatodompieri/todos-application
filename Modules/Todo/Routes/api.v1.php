@@ -2,8 +2,8 @@
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/todo', 'TodoV1Controller@index');
-    Route::get('/todo/{id}', 'TodoV1Controller@show');
     Route::get('/todo/prepare-elements', 'TodoV1Controller@prepareSelectElements');
+    Route::get('/todo/{id}', 'TodoV1Controller@show');
     Route::post('/todo', 'TodoV1Controller@store');
     Route::patch('/todo/{id}', 'TodoV1Controller@update');
     Route::post('/todo/{id}/status', 'TodoV1Controller@toggleStatus');
