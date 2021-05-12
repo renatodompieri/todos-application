@@ -3,16 +3,16 @@
 namespace Modules\Todo\Repositories;
 
 use App\Enums\CrudActionEnum;
+use App\Repositories\CrudRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Todo\Entities\Todo;
-use Prettus\Repository\Eloquent\BaseRepository;
 
-class TodoRepository extends BaseRepository
+class TodoRepository extends CrudRepository
 {
-    public function model(): string
+    public function getModel(): Model
     {
-        return Todo::class;
+        return new Todo();
     }
 
     /**
@@ -51,7 +51,7 @@ class TodoRepository extends BaseRepository
      * @param Todo $todo
      * @return Todo
      */
-    public function toggle(Todo $todo): Todo
+    public function toggle(Todo $todo): Model
     {
         $todo->forceFill([
             'completed_at' => (!$todo->status) ? Carbon::now() : null,
@@ -61,20 +61,28 @@ class TodoRepository extends BaseRepository
         return $todo;
     }
 
-    public function findByFilter(?string $filter)
+    public function findByFilterAndQuery(?string $filter = null, ?string $q = null)
     {
+        $query = $this->getQuery();
+
         if ($filter === 'important') {
-            return $this->findByField('important', 1);
+            $query = $query->where('important', 1);
         }
 
         if ($filter === 'completed') {
-            return $this->findWhere([['completed_at', '!=', null]]);
+            $query = $query->where([['completed_at', '!=', null]]);
         }
 
         if ($filter === 'deleted') {
-            return $this->findByField('status', 0);
+            $query = $query->where('status', 0);
         }
 
-        return $this->with('assignee')->all();
+        if (!empty($q)) {
+            $query = $query
+                ->where('title', 'like', '%' . $q . '%')
+                ->orWhere('description', 'like', '%' . $q . '%');
+        }
+
+        return $query->with('assignee')->get();
     }
 }

@@ -3,29 +3,25 @@
 namespace App\Repositories;
 
 use App\Enums\CrudActionEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 
 /**
- * This is still work in progress
- * I like prettus/l5-repository a lot and the code is SO clean!
- * So didn't use this abstract class yet, but this serves as an example...
+ * This is still work in progress...
 */
 abstract class CrudRepository
 {
-    /** @var Model */
-    private $model;
+    abstract public function getModel(): Model;
 
     /**
-     * CrudRepository constructor.
-     */
-    public function __construct()
+     * Get query string for model
+    */
+    public function getQuery(): Builder
     {
-        $this->model = $this->getModel();
+        return $this->getModel()->newQuery();
     }
-
-    abstract public function getModel(): Model;
 
     /**
      * Find object with given id or throw an error.
@@ -37,7 +33,7 @@ abstract class CrudRepository
 
     public function findOrFail(int $id): Model
     {
-        $model = $this->model->find($id);
+        $model = $this->getQuery()->find($id);
 
         if (!$model) {
             throw ValidationException::withMessages(['message' => trans('todo.could_not_find')]);
@@ -59,7 +55,7 @@ abstract class CrudRepository
         $order = $params['order'] ?? 'desc';
         $pageLength = $params['page_length'] ?? config('config.page_length');
 
-        return $this->model
+        return $this->getQuery()
             ->orderBy($sortBy, $order)
             ->paginate($pageLength);
     }
@@ -72,7 +68,7 @@ abstract class CrudRepository
      */
     public function create(array $params = []): Model
     {
-        return $this->model->forceCreate($this->formatParams($params));
+        return $this->getQuery()->forceCreate($this->formatParams($params));
     }
 
     /**
@@ -85,7 +81,7 @@ abstract class CrudRepository
     private function formatParams(array $params, ?CrudActionEnum $action = null): array
     {
         $formatted = [];
-        foreach ($this->model->getFillable() as $element) {
+        foreach ($this->getModel()->getFillable() as $element) {
             if ($action->value === CrudActionEnum::UPDATE && !isset($params[$element])) {
                 continue;
             }
@@ -132,6 +128,6 @@ abstract class CrudRepository
      */
     public function deleteMultiple(array $ids): ?bool
     {
-        return $this->model->whereIn('id', $ids)->delete();
+        return $this->getQuery()->whereIn('id', $ids)->delete();
     }
 }

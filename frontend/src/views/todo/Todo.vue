@@ -348,14 +348,12 @@ export default {
     // eslint-disable-next-line no-use-before-define
     watch([searchQuery, sortBy], () => fetchTodos())
     const updateRouteQuery = val => {
-      console.log(val, 'METHOD NOT YET IMPLEMENTED')
-      return false
-      // const currentRouteQuery = JSON.parse(JSON.stringify(route.value.query))
-      //
-      // if (val) currentRouteQuery.q = val
-      // else delete currentRouteQuery.q
-      //
-      // router.replace({ name: route.name, query: currentRouteQuery })
+      const currentRouteQuery = JSON.parse(JSON.stringify(route.value.query))
+
+      if (val) currentRouteQuery.q = val
+      else delete currentRouteQuery.q
+
+      router.replace({ name: route.name, query: currentRouteQuery })
     }
 
     const fetchTodos = () => {

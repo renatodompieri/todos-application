@@ -4,11 +4,11 @@ This is still being developed. Its EAT is on Sunday (May 9)
 
 #### Next changes:
 
-- Develop todo search function
-- Develop delete function
+- Test new repository
+- Test sort functions
 - Develop sort function
+- Develop delete function
 - Remove reorder function
-- Remove third-part packages for repositories
 
 ---
 

@@ -32,5 +32,4 @@ class Todo extends Model
     {
         return $this->belongsTo('App\Models\User', 'assignee_id', 'id');
     }
-
 }

@@ -5,15 +5,12 @@ namespace Modules\Todo\Http\Controllers;
 use App\Enums\CrudActionEnum;
 use App\Http\Controllers\Controller;
 use App\Repositories\UserRepository;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lanin\Laravel\ApiDebugger\Debugger;
-use Modules\Todo\Entities\Todo;
+use Illuminate\Validation\ValidationException;
 use Modules\Todo\Http\Requests\TodoStoreRequest;
 use Modules\Todo\Http\Requests\TodoUpdateRequest;
 use Modules\Todo\Repositories\TodoRepository;
-use Prettus\Validator\Exceptions\ValidatorException;
 
 class TodoV1Controller extends Controller
 {
@@ -41,7 +38,7 @@ class TodoV1Controller extends Controller
     {
         $filter = $request->get('filter');
 
-        return $this->ok($this->repo->findByFilter($filter)->jsonSerialize());
+        return $this->ok($this->repo->findByFilterAndQuery($filter)->jsonSerialize());
     }
 
     /**
@@ -49,7 +46,6 @@ class TodoV1Controller extends Controller
      * @post ("/api/v1/todo")
      * @param TodoStoreRequest $request
      * @return JsonResponse
-     * @throws ValidatorException
      * @Parameter("title", type="string", required="true", description="Title of Todo"),
      * @Parameter("date", type="date", required="true", description="Due date of Todo"),
      * })
@@ -72,9 +68,12 @@ class TodoV1Controller extends Controller
      */
     public function show($id): JsonResponse
     {
-        $todo = $this->repo->find($id);
-
-        return $this->ok($todo);
+        try {
+            $todo = $this->repo->findOrFail($id);
+            return $this->ok($todo->toArray());
+        } catch (ValidationException $e) {
+            return $this->error(["message" => $e->getMessage()]);
+        }
     }
 
     /**
@@ -87,10 +86,13 @@ class TodoV1Controller extends Controller
      */
     public function toggleStatus($id): JsonResponse
     {
-        $todo = $this->repo->find($id);
-        $todo = $this->repo->toggle($todo);
-
-        return $this->success(['message' => trans('todo.updated'), 'data' => $todo]);
+        try {
+            $todo = $this->repo->findOrFail($id);
+            $todo = $this->repo->toggle($todo);
+            return $this->success(['message' => trans('todo.updated'), 'data' => $todo]);
+        } catch (ValidationException $e) {
+            return $this->error(["message" => $e->getMessage()]);
+        }
     }
 
     /**
@@ -103,7 +105,7 @@ class TodoV1Controller extends Controller
     public function prepareSelectElements(): JsonResponse
     {
         $users = $this->userRepository->all();
-        return $this->success(['message' => trans('todo.success'), 'users' => $users ]);
+        return $this->success(['message' => trans('todo.success'), 'users' => $users]);
     }
 
     /**
@@ -112,7 +114,6 @@ class TodoV1Controller extends Controller
      * @param ({
      * @param TodoUpdateRequest $request
      * @return JsonResponse
-     * @throws ValidatorException
      * @Parameter("id", type="integer", required="true", description="Id of Todo"),
      * @Parameter("title", type="string", required="true", description="Title of Todo"),
      * @Parameter("date", type="date", required="true", description="Due date of Todo"),
@@ -120,9 +121,14 @@ class TodoV1Controller extends Controller
      */
     public function update($id, TodoUpdateRequest $request): JsonResponse
     {
-        $attributes = $this->repo->formatAttributes($request->all(), CrudActionEnum::UPDATE());
-        $todo = $this->repo->update($attributes, $id);
-        return $this->success(['data' => $todo, 'message' => trans('todo.updated')]);
+        try {
+            $attributes = $this->repo->formatAttributes($request->all(), CrudActionEnum::UPDATE());
+            $todo = $this->repo->findOrFail($id);
+            $todo = $this->repo->update($todo, $attributes);
+            return $this->success(['data' => $todo, 'message' => trans('todo.updated')]);
+        } catch (ValidationException $e) {
+            return $this->error(["message" => $e->getMessage()]);
+        }
     }
 
     /**
@@ -135,10 +141,12 @@ class TodoV1Controller extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $todo = $this->repo->find($id);
-
-        $this->repo->delete($todo->id);
-
-        return $this->success(['message' => trans('todo.deleted')]);
+        try {
+            $todo = $this->repo->findOrFail($id);
+            $this->repo->delete($todo->id);
+            return $this->success(['message' => trans('todo.deleted')]);
+        } catch (ValidationException $e) {
+            return $this->error(["message" => $e->getMessage()]);
+        }
     }
 }
