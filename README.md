@@ -7,7 +7,7 @@ This is still being developed. Its EAT is on Sunday (May 9)
 - Develop todo search function
 - Develop delete function
 - Develop sort function
-- Develop reorder function
+- Remove reorder function
 - Remove third-part packages for repositories
 
 ---

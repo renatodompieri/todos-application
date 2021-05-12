@@ -45,12 +45,6 @@ class TodoRepository extends BaseRepository
         return $formatted;
     }
 
-
-    public function deleteMultiple(array $ids)
-    {
-        return $this->model->whereIn('id', $ids)->delete();
-    }
-
     /**
      * Toggle given todo status.
      *
